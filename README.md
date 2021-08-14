@@ -1,1 +1,1 @@
-Batch-coordinates-converter
+batchconverter

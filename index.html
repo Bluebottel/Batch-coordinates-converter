@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Batch coordinates converter</title>
+    <meta charset="utf-8" />
+    <link rel="icon" href="img/favicon.png">
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+
+    <div class="container">
+
+      <span class="instructions">
+	<section class="instructions-subsection">
+	  <strong>WGS84</strong><br>
+	  <section>59°25'15.2"N 18°22'26.8"E</section><br>
+	  <strong>WGS84 DDM</strong><br>
+	  <section>59°25.254'N 18°22.447'E</section><br>
+	  <strong>WGS84 decimal (lat, lon)</strong><br>
+	  <section>59.420894, 18.374119</section>
+	</section>
+
+	<section class="instructions-subsection instructions--border-left">
+	  Accepts CSV formats with either a coordinate in a single column or
+	  latitude and longitude split over two columns. Headers will be
+	  preserved and the converted coordinates will be added in a separate column
+	</section>
+      </span>
+
+      <span class="error invisible" id="error">Error box</span>
+      <div class="spread">
+	<select class="select" id="sourceformat">
+	  <option value="wgs84">WGS84</option>
+	  <option value="wgs84ddm" selected>WGS84 DDM</option>
+	  <option value="wgs84dec">WGS84 decimal (lat, lon)</option>
+	</select>
+
+	<span class="arrow">&rArr;</span>
+
+	<select class="select" id="targetformat">
+	  <option value="wgs84">WGS84</option>
+	  <option value="wgs84ddm">WGS84 DDM</option>
+	  <option value="wgs84dec" selected>WGS84 decimal (lat, lon)</option>
+	</select>
+
+      </div>
+      
+      <label for="fileinput" class="button-common file-picker-button">
+	<input type="file" accept=".csv" class="vanish" id="fileinput" />
+	Choose file...
+      </label>
+
+      <a class="blob-anchor" id="saveanchor" download="converted.csv">
+	<button class="download-button button-common invisible" id="savebutton">
+	  Save
+	</button>
+      </a>
+      
+    </div>
+
+    <script src="utils.js"></script>
+    <script src="conversions.js"></script>
+    <script src="papaparse.min.js"></script>
+
+    <script>
+      "use strict"
+
+      const fileInput = document.getElementById('fileinput')
+      const errorBox = document.getElementById('error')
+      const inputFormat = document.getElementById('sourceformat')
+      const targetFormat = document.getElementById('targetformat')
+      const saveAnchor = document.getElementById('saveanchor')
+      const saveButton = document.getElementById('savebutton')
+      
+      
+      fileInput.onchange = e => {
+	const fileHandle = e.target.files[0]
+
+	Papa.parse(fileHandle, {
+	  header: false,
+	  skipEmptyLines: true,
+	  complete: handleResults,
+	})
+
+	function handleResults(results) {
+
+	  if(results.errors.length != 0) {
+	    showError(errorBox, results.errors[0].message)
+	  }
+
+	  let converted
+
+	  try {
+	    converted = massConvert({
+	      sourceFormat: inputFormat.value,
+	      targetFormat: targetFormat.value,
+	      rows: results.data,
+	    })
+	  }
+	  catch(error) {
+	    showError(errorBox, 'Error while converting: ' + error.message)
+	    return
+	  }
+
+	  try {
+	    // convert the json back to csv
+	    converted = Papa.unparse(converted, { quoteChar: '"' })
+	  }
+	  catch(error) {
+	    showError(errorBox, 'Error while parsing file: ' + error.message)
+	    return
+	  }
+
+	  saveAnchor.href = createBlobUrl(converted)
+	  saveButton.classList.remove('invisible')
+
+	  // TODO: reconvert the file when the target/source format
+	  // is changed
+	  // TODO: check for broken formats
+	  // TODO: be error resistant
+
+	}
+      }
+      
+    </script>
+    
+  </body>
+</html>

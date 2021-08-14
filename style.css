@@ -1,0 +1,122 @@
+* {
+    box-sizing: border-box;
+    font-family: sans serif;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-content: center;
+  gap: 25px;
+}
+
+.vanish {
+  width: 0.1px;
+  height: 0.1px;
+  position: absolute;
+  top:0;
+  left: 0;
+}
+
+.button-common {
+  border-width: 2px;
+  border-style: solid;
+  height: 50px;
+  font-size: 25px;
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.5);
+  font-family: "sans-serif";
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+  width: 100%;
+}
+
+.file-picker-button {
+  background: #f2f2f2;
+  color: black;
+  border-color: black;
+}
+
+.file-picker-button:hover {
+  background: #5c5c5c;
+  color: white;
+}
+
+.invisible {
+  display: none;
+}
+
+.download-button {
+  background: #95e895;
+  border-color: #07ff0b;
+}
+
+.download-button:hover {
+  background: #4edc4e;
+}
+
+.instructions {
+  font-family: sans-serif;
+  border: 2px solid #faff82;
+  background: #ffffd6;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  max-width: 580px;
+}
+
+.instructions-subsection {
+    flex: 1 1 0;
+    font-family: sans-serif;
+}
+
+.instructions--border-left {
+    border-left: 2px solid #f5f58e;
+    padding-left: 15px;
+}
+
+.italics {
+    font-style: italic;
+}
+
+.spread {
+    display: flex;
+    justify-content: space-between;
+}
+
+.select {
+  font-size: 17px;
+  text-align: center;
+  
+  /* chrome specific hack */
+  text-align-last: center;
+  
+  padding: 15px 10px;
+  border: 2px solid black;
+  border-radius: 2px;
+}
+
+.arrow {
+  font-size: 40px;
+  vertical-align: middle;
+  margin: 0 5px;
+}
+
+.error {
+  border: 2px solid red;
+  background: pink;
+  padding: 10px;
+  max-height: 400px;
+}
+
+.blob-anchor {
+    text-decoration: none;
+}
