@@ -1,6 +1,6 @@
 * {
     box-sizing: border-box;
-    font-family: sans serif;
+    font-family: sans-serif;
 }
 
 html, body {
@@ -31,7 +31,6 @@ html, body {
   height: 50px;
   font-size: 25px;
   box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.5);
-  font-family: "sans-serif";
   cursor: pointer;
   display: grid;
   place-content: center;
@@ -63,7 +62,6 @@ html, body {
 }
 
 .instructions {
-  font-family: sans-serif;
   border: 2px solid #faff82;
   background: #ffffd6;
   padding: 10px;
@@ -75,12 +73,18 @@ html, body {
 
 .instructions-subsection {
     flex: 1 1 0;
-    font-family: sans-serif;
+    flex-direction: column;
 }
 
 .instructions--border-left {
     border-left: 2px solid #f5f58e;
     padding-left: 15px;
+}
+
+.instructions-subsection--misc {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .italics {
