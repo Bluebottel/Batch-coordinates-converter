@@ -83,43 +83,31 @@
       let blobUrlRef = false
       
       
-      fileInput.onchange = async event => {
-	const { sourceFormat, targetFormat } = getFormats()
-	const fileHandle = event.target.files[0]
+      fileInput.onchange = updateState
+      inputSourceFormat.onchange = updateState
+      inputTargetFormat.onchange = updateState
 
-	console.log('old bloburl: ', blobUrlRef)
+      async function updateState() {
+	if (fileInput.files.length === 0) return
 	
-	// old blobs don't garbage collect automatically
-	if (blobUrlRef !== false)
-	  URL.revokeObjectURL(blobUrlRef)
+	const fileHandle = fileInput.files[0]
 
-	let csv = await convertFile({
-	  sourceFormat, targetFormat, fileHandle,
-	  onError: errorMessage => showError(errorBox, errorMessage),
+	const csv = await convertFile({
+	  sourceFormat: inputSourceFormat.value,
+	  targetFormat: inputTargetFormat.value,
+	  fileHandle,
+	  onError: errorMessage => showError(errorBox, errorMessage)
 	})
 
-	console.log('csv: ', csv)
-	
+	// old blobs don't garbage collect automatically
+	if (blobUrlRef !== false) URL.revokeObjectURL(blobUrlRef)
+
 	blobUrlRef = createBlobUrl(csv)
 
-	console.log(blobUrlRef)
-	
 	saveAnchor.href = blobUrlRef
 	saveButton.classList.remove('invisible')
-
-	// TODO: reconvert the file when the target/source format
-	// is changed
-	
       }
 
-      
-
-      function getFormats() {
-	const source = inputSourceFormat.value
-	const target = inputTargetFormat.value
-
-	return { sourceFormat: source, targetFormat: target }
-      }
       
       
     </script>

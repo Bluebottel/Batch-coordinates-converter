@@ -228,7 +228,6 @@ async function convertFile({ sourceFormat, targetFormat, fileHandle, onError }) 
 	  reject()
 	}
 
-	console.log('converted: ', converted)
 	resolve(converted)
       },
     })
