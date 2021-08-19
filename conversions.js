@@ -167,6 +167,8 @@ function massConvert({ sourceFormat, targetFormat, rows}) {
 
   let convertedRows = rows.map(row => {
 
+    if (row[0] === '') return [...row, '']
+
     // double columns means split latitude and longitude
     if (row.length === 2) {
 
@@ -185,9 +187,50 @@ function massConvert({ sourceFormat, targetFormat, rows}) {
 
   // put the headers back on top if there are any
   if (headers !== false) {
-    headers.push('Converted')
+    headers.push(targetFormat)
     convertedRows.unshift(headers)
   }
 
   return convertedRows
+}
+
+
+async function convertFile({ sourceFormat, targetFormat, fileHandle, onError }) {
+
+  return new Promise((resolve, reject) => {
+    Papa.parse(fileHandle, {
+      header: false,
+      skipEmptyLines: false,
+      complete: results => {
+	if(results.errors.length != 0)
+	  onError(results.errors[0].message)
+
+	let converted
+
+	try {
+	  converted = massConvert({
+	    sourceFormat: sourceFormat,
+	    targetFormat: targetFormat,
+	    rows: results.data,
+	  })
+	}
+	catch(error) {
+	  onError('Error while converting: ' + error.message)
+	  reject()
+	}
+
+	try {
+	  // convert the json back to csv
+	  converted = Papa.unparse(converted, { quoteChar: '"' })
+	}
+	catch(error) {
+	  onError('Error while parsing file: ' + error.message)
+	  reject()
+	}
+
+	console.log('converted: ', converted)
+	resolve(converted)
+      },
+    })
+  })
 }

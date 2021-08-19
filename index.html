@@ -58,69 +58,69 @@
       
     </div>
 
+    <script src="papaparse.min.js"></script>
     <script src="utils.js"></script>
     <script src="conversions.js"></script>
-    <script src="papaparse.min.js"></script>
 
     <script>
       "use strict"
 
+
+      //console.log('wgs84decToWgs84(58.49055,16.932433333333332): ')
+      //console.log(wgs84decToWgs84('58.49055,16.932433333333332'))
+      //console.log("correct output: 58°29'26.0\"N 16°55'56.8\"E")
+
+      console.log('wgs84ddmToDec: ', wgs84ddmToWgs84dec("59°25.254'N 18°22.447'E"))
+      console.log('wgs84toWgs84dec: ', wgs84toWgs84dec('59°25\'15.2"N 18°22\'26.8"E'))
+
       const fileInput = document.getElementById('fileinput')
       const errorBox = document.getElementById('error')
-      const inputFormat = document.getElementById('sourceformat')
-      const targetFormat = document.getElementById('targetformat')
+      const inputSourceFormat = document.getElementById('sourceformat')
+      const inputTargetFormat = document.getElementById('targetformat')
       const saveAnchor = document.getElementById('saveanchor')
       const saveButton = document.getElementById('savebutton')
-      
-      
-      fileInput.onchange = e => {
-	const fileHandle = e.target.files[0]
 
-	Papa.parse(fileHandle, {
-	  header: false,
-	  skipEmptyLines: true,
-	  complete: handleResults,
+      let blobUrlRef = false
+      
+      
+      fileInput.onchange = async event => {
+	const { sourceFormat, targetFormat } = getFormats()
+	const fileHandle = event.target.files[0]
+
+	console.log('old bloburl: ', blobUrlRef)
+	
+	// old blobs don't garbage collect automatically
+	if (blobUrlRef !== false)
+	  URL.revokeObjectURL(blobUrlRef)
+
+	let csv = await convertFile({
+	  sourceFormat, targetFormat, fileHandle,
+	  onError: errorMessage => showError(errorBox, errorMessage),
 	})
 
-	function handleResults(results) {
+	console.log('csv: ', csv)
+	
+	blobUrlRef = createBlobUrl(csv)
 
-	  if(results.errors.length != 0) {
-	    showError(errorBox, results.errors[0].message)
-	  }
+	console.log(blobUrlRef)
+	
+	saveAnchor.href = blobUrlRef
+	saveButton.classList.remove('invisible')
 
-	  let converted
-
-	  try {
-	    converted = massConvert({
-	      sourceFormat: inputFormat.value,
-	      targetFormat: targetFormat.value,
-	      rows: results.data,
-	    })
-	  }
-	  catch(error) {
-	    showError(errorBox, 'Error while converting: ' + error.message)
-	    return
-	  }
-
-	  try {
-	    // convert the json back to csv
-	    converted = Papa.unparse(converted, { quoteChar: '"' })
-	  }
-	  catch(error) {
-	    showError(errorBox, 'Error while parsing file: ' + error.message)
-	    return
-	  }
-
-	  saveAnchor.href = createBlobUrl(converted)
-	  saveButton.classList.remove('invisible')
-
-	  // TODO: reconvert the file when the target/source format
-	  // is changed
-	  // TODO: check for broken formats
-	  // TODO: be error resistant
-
-	}
+	// TODO: reconvert the file when the target/source format
+	// is changed
+	
       }
+
+      
+
+      function getFormats() {
+	const source = inputSourceFormat.value
+	const target = inputTargetFormat.value
+
+	return { sourceFormat: source, targetFormat: target }
+      }
+      
       
     </script>
     
