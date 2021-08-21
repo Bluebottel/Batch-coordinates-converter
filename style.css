@@ -30,7 +30,6 @@ html, body {
   border-style: solid;
   height: 50px;
   font-size: 25px;
-  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.5);
   cursor: pointer;
   display: grid;
   place-content: center;
@@ -106,6 +105,12 @@ html, body {
   padding: 15px 10px;
   border: 2px solid black;
   border-radius: 2px;
+  cursor: pointer;
+}
+
+.select:hover {
+  background: #5c5c5c;
+  color: white;
 }
 
 .arrow {
@@ -123,4 +128,37 @@ html, body {
 
 .blob-anchor {
     text-decoration: none;
+}
+
+.label-delimiter {
+  font-size: 15px;
+  position: relative;
+  top: -18px;
+
+  /* semi-hack to squeeze out some more space */
+  height: 0px;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-row-gap {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.select-delimiter {
+  padding: 0px 15px;
+  flex: 1 1 auto;
+}
+
+.shadow {
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.5);
+}
+
+.extra-margin-top {
+  margin-top: 7px;
 }
