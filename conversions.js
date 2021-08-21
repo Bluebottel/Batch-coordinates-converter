@@ -195,7 +195,12 @@ function massConvert({ sourceFormat, targetFormat, rows}) {
 }
 
 
-async function convertFile({ sourceFormat, targetFormat, fileHandle, onError }) {
+async function convertFile({ sourceFormat,
+			     targetFormat,
+			     fileHandle,
+			     onError,
+			     outputDelimiter
+			   }) {
 
   return new Promise((resolve, reject) => {
     Papa.parse(fileHandle, {
@@ -221,7 +226,7 @@ async function convertFile({ sourceFormat, targetFormat, fileHandle, onError }) 
 
 	try {
 	  // convert the json back to csv
-	  converted = Papa.unparse(converted, { quoteChar: '"' })
+	  converted = Papa.unparse(converted, { delimiter: outputDelimiter })
 	}
 	catch(error) {
 	  onError('Error while parsing file: ' + error.message)
