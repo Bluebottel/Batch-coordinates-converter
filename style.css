@@ -159,6 +159,10 @@ html, body {
   box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.5);
 }
 
+.bold {
+    font-weight: bold;
+}
+
 .extra-margin-top {
   margin-top: 7px;
 }
